@@ -1,0 +1,279 @@
+# ========================================
+# BACKEND - TP PROGRAMACIÓN IV (UTN)
+# Sistema de Gestión de Rutinas de Entrenamiento
+# ========================================
+
+## DESCRIPCIÓN
+Este backend implementa una API REST para la gestión de rutinas de entrenamiento y sus ejercicios asociados.
+Desarrollado con FastAPI, PostgreSQL y SQLModel, aplicando una arquitectura en capas.
+
+El sistema permite:
+- Crear, listar, buscar, modificar y eliminar rutinas
+- Gestionar ejercicios dentro de cada rutina
+- Validar reglas de negocio
+- Mantener integridad referencial entre tablas
+
+## TECNOLOGÍAS UTILIZADAS
+- Python 3.13
+- FastAPI
+- SQLModel
+- PostgreSQL
+- psycopg2
+- Uvicorn
+
+## ARQUITECTURA
+El proyecto utiliza una arquitectura en capas para API REST:
+
+- Capa de Dominio: models/
+- Capa de Aplicación: routes/
+- Capa de Persistencia: database/
+- Punto de Entrada: main.py
+
+## ESTRUCTURA DEL PROYECTO
+
+backend/
+│
+├─ models/
+│  ├─ rutina.py                    # Modelo de rutina
+│  ├─ ejercicio.py                 # Modelo de ejercicio
+│  ├─ rutina_schema.py             # Schema para crear rutina
+│  ├─ rutina_update_schema.py      # Schema para actualizar rutina
+│  ├─ ejercicio_schema.py          # Schema para crear ejercicio
+│  ├─ ejercicio_update_schema.py   # Schema para actualizar ejercicio
+│  └─ dia_semana.py                # Enum de días de la semana
+│
+├─ routes/
+│  ├─ rutinas.py                   # Endpoints de rutinas
+│  └─ ejercicios.py                # Endpoints de ejercicios
+│
+├─ database/
+│  └─ db.py                        # Configuración de base de datos
+│
+├─ main.py                         # Punto de entrada de la aplicación
+├─ requirements.txt                # Dependencias del proyecto
+├─ .env                            # Variables de entorno
+├─ .gitignore                      # Archivos ignorados por Git
+└─ Documentacion.txt               # Este archivo
+
+## CONFIGURACIÓN INICIAL
+
+### 1. Crear entorno virtual
+python -m venv venv
+
+### 2. Activar entorno
+venv\Scripts\activate
+
+### 3. Instalar dependencias
+pip install -r requirements.txt
+
+## CONFIGURACIÓN DE BASE DE DATOS
+
+### Crear la base de datos en PostgreSQL:
+CREATE DATABASE GymApp;
+
+### Configurar el archivo .env:
+DATABASE_URL=postgresql+psycopg2://postgres:liam@localhost:5432/GymApp
+
+### Creación de Tablas (SQL)
+
+-- Tabla rutina
+CREATE TABLE rutina (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL UNIQUE,
+    descripcion TEXT,
+    fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Tabla ejercicio
+CREATE TABLE ejercicio (
+    id SERIAL PRIMARY KEY,
+    rutina_id INTEGER NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    dia VARCHAR(20),
+    series INTEGER,
+    repeticiones INTEGER,
+    peso DECIMAL(6,2),
+    notas TEXT,
+    orden INTEGER,
+    CONSTRAINT fk_rutina FOREIGN KEY (rutina_id)
+        REFERENCES rutina(id)
+        ON DELETE CASCADE
+);
+
+## EJECUCIÓN DEL SERVIDOR
+
+python -m uvicorn main:app --reload
+
+Servidor disponible en: http://127.0.0.1:8000
+Documentación Swagger: http://127.0.0.1:8000/docs
+
+## ENDPOINTS DISPONIBLES
+
+### Rutinas
+- GET    /rutinas                    # Listar todas las rutinas
+- POST   /rutinas                    # Crear nueva rutina
+- GET    /rutinas/buscar?nombre=...  # Buscar rutinas por nombre
+- GET    /rutinas/{id}               # Obtener rutina por ID
+- GET    /rutinas/{id}/detalle       # Obtener rutina con ejercicios agrupados por día
+- PUT    /rutinas/{id}               # Actualizar rutina
+- DELETE /rutinas/{id}               # Eliminar rutina
+
+### Ejercicios
+- GET    /ejercicios                 # Listar todos los ejercicios
+- POST   /ejercicios                 # Crear nuevo ejercicio
+- GET    /ejercicios/{id}            # Obtener ejercicio por ID
+- PUT    /ejercicios/{id}            # Actualizar ejercicio
+- DELETE /ejercicios/{id}            # Eliminar ejercicio
+
+## VALIDACIONES IMPLEMENTADAS
+
+✓ Nombre de rutina único (no se permiten duplicados)
+✓ Series > 0 (debe ser mayor a cero)
+✓ Repeticiones > 0 (debe ser mayor a cero)
+✓ Peso >= 0 (no puede ser negativo)
+✓ Día: acepta cualquier string (Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo)
+✓ Validación de existencia de rutina al crear/editar ejercicios
+✓ Manejo de errores con códigos HTTP apropiados
+✓ Mensajes de error claros y descriptivos
+
+IMPORTANTE: Al crear ejercicios en Swagger:
+- NO uses 0 en series o repeticiones (debe ser mayor a 0)
+- El peso puede ser 0 o positivo
+- Todos los campos excepto rutina_id y nombre son opcionales
+
+## EJEMPLOS DE USO CON JSON
+
+### 1. CREAR RUTINA
+Endpoint: POST /rutinas
+
+JSON para copiar y pegar en Swagger:
+{
+  "nombre": "Rutina de Pecho y Tríceps",
+  "descripcion": "Entrenamiento enfocado en pecho y tríceps para hipertrofia"
+}
+
+### 2. ACTUALIZAR RUTINA
+Endpoint: PUT /rutinas/{id}
+
+JSON para copiar y pegar en Swagger:
+{
+  "nombre": "Rutina de Pecho Modificada",
+  "descripcion": "Nueva descripción actualizada"
+}
+
+### 3. CREAR EJERCICIO
+Endpoint: POST /ejercicios
+
+JSON para copiar y pegar en Swagger:
+{
+  "rutina_id": 1,
+  "nombre": "Press de banca",
+  "dia": "Lunes",
+  "series": 4,
+  "repeticiones": 10,
+  "peso": 60.5,
+  "notas": "Mantener espalda apoyada en el banco",
+  "orden": 1
+}
+
+Otro ejemplo de ejercicio:
+{
+  "rutina_id": 1,
+  "nombre": "Press inclinado con mancuernas",
+  "dia": "Lunes",
+  "series": 3,
+  "repeticiones": 12,
+  "peso": 22.5,
+  "notas": "Ángulo de 30 grados",
+  "orden": 2
+}
+
+Ejemplo con campos opcionales mínimos:
+{
+  "rutina_id": 1,
+  "nombre": "Fondos en paralelas",
+  "dia": "Lunes",
+  "series": 3,
+  "repeticiones": 8
+}
+
+### 4. ACTUALIZAR EJERCICIO
+Endpoint: PUT /ejercicios/{id}
+
+JSON para actualizar solo algunos campos:
+{
+  "series": 5,
+  "repeticiones": 8,
+  "peso": 65.0
+}
+
+JSON para actualizar todo:
+{
+  "rutina_id": 1,
+  "nombre": "Press de banca plano",
+  "dia": "Miércoles",
+  "series": 4,
+  "repeticiones": 12,
+  "peso": 70.0,
+  "notas": "Aumentar peso progresivamente",
+  "orden": 1
+}
+
+### 5. BUSCAR RUTINAS
+Endpoint: GET /rutinas/buscar?nombre=Pecho
+
+No requiere JSON, solo parámetro en la URL.
+Ejemplo: /rutinas/buscar?nombre=Pecho
+
+### 6. OBTENER DETALLE DE RUTINA
+Endpoint: GET /rutinas/{id}/detalle
+
+No requiere JSON, solo el ID en la URL.
+Ejemplo: /rutinas/1/detalle
+
+Respuesta esperada:
+{
+  "id": 1,
+  "nombre": "Rutina de Pecho",
+  "descripcion": "Entrenamiento de pecho y tríceps",
+  "fecha_creacion": "2025-12-05T10:00:00",
+  "ejercicios_por_dia": {
+    "Lunes": [
+      {
+        "id": 1,
+        "nombre": "Press de banca",
+        "series": 3,
+        "repeticiones": 10,
+        "peso": 60.5,
+        "notas": "Mantener espalda apoyada",
+        "orden": 1
+      }
+    ]
+  }
+}
+
+## CÓDIGOS DE ESTADO HTTP
+
+200 OK - Operación exitosa
+201 Created - Recurso creado exitosamente
+400 Bad Request - Error en la solicitud (validación fallida, nombre duplicado, etc.)
+404 Not Found - Recurso no encontrado
+422 Unprocessable Entity - Error de validación de Pydantic
+500 Internal Server Error - Error interno del servidor
+
+## CHECKLIST DE ENTREGA
+
+✓ Backend levanta sin errores
+✓ Conexión a PostgreSQL OK
+✓ Tablas creadas
+✓ CRUD Rutinas funcionando
+✓ CRUD Ejercicios funcionando
+✓ Validaciones funcionando
+✓ Búsqueda por nombre OK
+✓ Detalle con ejercicios por día OK
+✓ Swagger accesible
+✓ Documentación completa
+
+## AUTOR
+Trabajo Práctico UTN - Programación IV
+Alumno: Liam Fehr
