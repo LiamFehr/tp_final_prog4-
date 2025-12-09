@@ -11,4 +11,5 @@ engine = create_engine(DATABASE_URL, echo=True)
 def crear_tablas():
     from models.rutina import Rutina
     from models.ejercicio import Ejercicio
+    from models.user import User
     SQLModel.metadata.create_all(engine)

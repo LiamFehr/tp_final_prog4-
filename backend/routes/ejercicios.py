@@ -5,6 +5,7 @@ from database.db import engine
 from models.ejercicio import Ejercicio
 from models.ejercicio_schema import EjercicioCreate
 from models.ejercicio_update_schema import EjercicioUpdate
+from routes.auth import get_current_user
 
 router = APIRouter()
 
@@ -13,7 +14,7 @@ def get_session():
         yield session
 
 @router.post("/ejercicios", status_code=201)
-def crear_ejercicio(ejercicio_data: EjercicioCreate, session: Session = Depends(get_session)):
+def crear_ejercicio(ejercicio_data: EjercicioCreate, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     from models.rutina import Rutina
     from sqlalchemy.exc import IntegrityError
     
@@ -52,12 +53,12 @@ def crear_ejercicio(ejercicio_data: EjercicioCreate, session: Session = Depends(
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 @router.get("/ejercicios")
-def listar_ejercicios(session: Session = Depends(get_session)):
+def listar_ejercicios(session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     ejercicios = session.query(Ejercicio).all()
     return ejercicios
 
 @router.get("/ejercicios/{ejercicio_id}")
-def obtener_ejercicio_por_id(ejercicio_id: int, session: Session = Depends(get_session)):
+def obtener_ejercicio_por_id(ejercicio_id: int, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     ejercicio = session.get(Ejercicio, ejercicio_id)
     
     if not ejercicio:
@@ -69,7 +70,8 @@ def obtener_ejercicio_por_id(ejercicio_id: int, session: Session = Depends(get_s
 def actualizar_ejercicio(
     ejercicio_id: int,
     ejercicio_data: EjercicioUpdate,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    current_user = Depends(get_current_user)
 ):
     from models.rutina import Rutina
     from sqlalchemy.exc import IntegrityError
@@ -124,7 +126,7 @@ def actualizar_ejercicio(
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 @router.delete("/ejercicios/{ejercicio_id}")
-def eliminar_ejercicio(ejercicio_id: int, session: Session = Depends(get_session)):
+def eliminar_ejercicio(ejercicio_id: int, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     ejercicio = session.get(Ejercicio, ejercicio_id)
     
     if not ejercicio:

@@ -5,6 +5,7 @@ from database.db import engine
 from models.rutina import Rutina
 from models.rutina_schema import RutinaCreate
 from models.rutina_update_schema import RutinaUpdate
+from routes.auth import get_current_user
 
 router = APIRouter()
 
@@ -13,7 +14,7 @@ def get_session():
         yield session
 
 @router.post("/rutinas", status_code=201)
-def crear_rutina(rutina_data: RutinaCreate, session: Session = Depends(get_session)):
+def crear_rutina(rutina_data: RutinaCreate, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     from datetime import datetime
     from sqlalchemy.exc import IntegrityError
     
@@ -50,7 +51,8 @@ def crear_rutina(rutina_data: RutinaCreate, session: Session = Depends(get_sessi
 def listar_rutinas(
     page: int = 1, 
     limit: int = 10, 
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    current_user = Depends(get_current_user)
 ):
     """
     Obtener lista de rutinas con paginación
@@ -88,7 +90,7 @@ def listar_rutinas(
     }
 
 @router.get("/rutinas/buscar")
-def buscar_rutinas(nombre: str, session: Session = Depends(get_session)):
+def buscar_rutinas(nombre: str, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     """
     Busca rutinas por nombre (búsqueda parcial, case-insensitive)
     """
@@ -98,7 +100,7 @@ def buscar_rutinas(nombre: str, session: Session = Depends(get_session)):
     return rutinas
 
 @router.get("/rutinas/{rutina_id}")
-def obtener_rutina_por_id(rutina_id: int, session: Session = Depends(get_session)):
+def obtener_rutina_por_id(rutina_id: int, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     rutina = session.get(Rutina, rutina_id)
     
     if not rutina:
@@ -110,7 +112,8 @@ def obtener_rutina_por_id(rutina_id: int, session: Session = Depends(get_session
 def actualizar_rutina(
     rutina_id: int,
     rutina_data: RutinaUpdate,
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    current_user = Depends(get_current_user)
 ):
     from sqlalchemy.exc import IntegrityError
     
@@ -149,7 +152,7 @@ def actualizar_rutina(
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 @router.delete("/rutinas/{rutina_id}")
-def eliminar_rutina(rutina_id: int, session: Session = Depends(get_session)):
+def eliminar_rutina(rutina_id: int, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     rutina = session.get(Rutina, rutina_id)
     
     if not rutina:
@@ -167,7 +170,7 @@ def eliminar_rutina(rutina_id: int, session: Session = Depends(get_session)):
 
 
 @router.get("/rutinas/{rutina_id}/detalle")
-def obtener_detalle_rutina(rutina_id: int, session: Session = Depends(get_session)):
+def obtener_detalle_rutina(rutina_id: int, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     """
     Obtiene una rutina con todos sus ejercicios agrupados por día
     """

@@ -10,6 +10,17 @@ const api = axios.create({
 });
 
 // Interceptor para manejo de errores
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -18,6 +29,32 @@ api.interceptors.response.use(
         return Promise.reject(new Error(errorMessage));
     }
 );
+
+// ============ AUTH ============
+
+export const login = async (username, password) => {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    // Axios serializes FormData automatically but creating url encoded string might be safer for OAuth2 form
+    // Let's use URLSearchParams for x-www-form-urlencoded
+    const params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+
+    const response = await api.post('/token', params, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
+    return response.data;
+};
+
+export const register = async (username, password) => {
+    const response = await api.post('/register', { username, password });
+    return response.data;
+};
 
 // ============ RUTINAS ============
 

@@ -61,6 +61,13 @@
   gap: var(--spacing-md);
 }
 
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+
 /* ============ MAIN CONTENT ============ */
 .app-main {
   flex: 1;

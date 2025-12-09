@@ -43,7 +43,16 @@ Asegúrese de tener instalado:
            REFERENCES rutina(id)
            ON DELETE CASCADE
    );
+
+   -- Tabla user (Para Autenticación)
+   CREATE TABLE "user" (
+       id SERIAL PRIMARY KEY,
+       username VARCHAR NOT NULL UNIQUE,
+       hashed_password VARCHAR NOT NULL
+   );
    ```
+
+   > **Nota:** El sistema ahora crea las tablas automáticamente al iniciarse, pero puede ejecutar este script para mayor seguridad o control.
 
 ---
 
@@ -108,6 +117,12 @@ npm run dev
 ```
 
 ✅ **Verificación:** Abra [http://localhost:5173](http://localhost:5173). Debería ver la aplicación funcionando.
+
+### Paso 4.3: Registro e Inicio de Sesión
+El sistema cuenta con autenticación protegida.
+1. Al abrir la app, será redirigido al **Login**.
+2. Haga clic en **"Registrarse"** para crear un usuario.
+3. Inicie sesión con sus credenciales para acceder a sus rutinas.
 
 ---
 

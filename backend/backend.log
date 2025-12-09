@@ -1,0 +1,26 @@
+INFO:     Started server process [30044]
+INFO:     Waiting for application startup.
+2025-12-09 16:42:33,702 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-12-09 16:42:33,702 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-09 16:42:33,703 INFO sqlalchemy.engine.Engine select current_schema()
+2025-12-09 16:42:33,703 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-09 16:42:33,703 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-12-09 16:42:33,703 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-09 16:42:33,704 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-09 16:42:33,709 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-09 16:42:33,709 INFO sqlalchemy.engine.Engine [generated in 0.00019s] {'table_name': 'rutina', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-09 16:42:33,711 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-09 16:42:33,711 INFO sqlalchemy.engine.Engine [cached since 0.002074s ago] {'table_name': 'user', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-09 16:42:33,712 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-09 16:42:33,712 INFO sqlalchemy.engine.Engine [cached since 0.002699s ago] {'table_name': 'ejercicio', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-09 16:42:33,712 INFO sqlalchemy.engine.Engine COMMIT
+INFO:     Application startup complete.
+ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] solo se permite un uso de cada direcci¾n de socket (protocolo/direcci¾n de red/puerto)
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.

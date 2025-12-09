@@ -20,6 +20,9 @@ El sistema permite:
 - PostgreSQL
 - psycopg2
 - Uvicorn
+- Passlib (Bcrypt)
+- Python-Jose (JWT)
+- Python-Multipart
 
 ## ARQUITECTURA
 El proyecto utiliza una arquitectura en capas para API REST:
@@ -40,11 +43,14 @@ backend/
 │  ├─ rutina_update_schema.py      # Schema para actualizar rutina
 │  ├─ ejercicio_schema.py          # Schema para crear ejercicio
 │  ├─ ejercicio_update_schema.py   # Schema para actualizar ejercicio
-│  └─ dia_semana.py                # Enum de días de la semana
+│  ├─ dia_semana.py                # Enum de días de la semana
+│  ├─ user.py                      # Modelo de usuario
+│  └─ user_schema.py               # Schemas de usuario (Auth)
 │
 ├─ routes/
 │  ├─ rutinas.py                   # Endpoints de rutinas
-│  └─ ejercicios.py                # Endpoints de ejercicios
+│  ├─ ejercicios.py                # Endpoints de ejercicios
+│  └─ auth.py                      # Endpoints de autenticación
 │
 ├─ database/
 │  └─ db.py                        # Configuración de base de datos
@@ -100,6 +106,13 @@ CREATE TABLE ejercicio (
         ON DELETE CASCADE
 );
 
+-- Tabla user (Autenticación)
+CREATE TABLE "user" (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR NOT NULL UNIQUE,
+    hashed_password VARCHAR NOT NULL
+);
+
 ## EJECUCIÓN DEL SERVIDOR
 
 python -m uvicorn main:app --reload
@@ -109,7 +122,11 @@ Documentación Swagger: http://127.0.0.1:8000/docs
 
 ## ENDPOINTS DISPONIBLES
 
-### Rutinas
+### Autenticación
+- POST   /register                   # Registrar nuevo usuario
+- POST   /token                      # Iniciar sesión (Login) -> Retorna Token JWT
+
+### Rutinas (Requieren Token)
 - GET    /rutinas                    # Listar todas las rutinas
 - POST   /rutinas                    # Crear nueva rutina
 - GET    /rutinas/buscar?nombre=...  # Buscar rutinas por nombre
@@ -134,7 +151,10 @@ Documentación Swagger: http://127.0.0.1:8000/docs
 ✓ Día: acepta cualquier string (Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo)
 ✓ Validación de existencia de rutina al crear/editar ejercicios
 ✓ Manejo de errores con códigos HTTP apropiados
+✓ Manejo de errores con códigos HTTP apropiados
 ✓ Mensajes de error claros y descriptivos
+✓ Autenticación JWT (rutas protegidas)
+✓ Contraseñas hasheadas (Bcrypt)
 
 IMPORTANTE: Al crear ejercicios en Swagger:
 - NO uses 0 en series o repeticiones (debe ser mayor a 0)
@@ -273,6 +293,7 @@ Respuesta esperada:
 ✓ Detalle con ejercicios por día OK
 ✓ Swagger accesible
 ✓ Documentación completa
+✓ Autenticación y Seguridad (JWT)
 
 ## AUTOR
 Trabajo Práctico UTN - Programación IV
