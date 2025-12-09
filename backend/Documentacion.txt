@@ -20,7 +20,9 @@ El sistema permite:
 - PostgreSQL
 - psycopg2
 - Uvicorn
-- Passlib (Bcrypt)
+- Passlib (Bcrypt) -> Bcrypt 3.2.2 (Requerido para compatibilidad en Windows)
+- Python-Jose (JWT)
+- Python-Multipart
 - Python-Jose (JWT)
 - Python-Multipart
 

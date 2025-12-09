@@ -4,7 +4,15 @@ API REST para la gestión de rutinas de entrenamiento, ejercicios y autenticaci�
 
 ## 🚀 Requisitos
 - **Python 3.10** o superior.
-- **PostgreSQL** instalado y ejecutándose.
+- **PostgreSQL** instalado.
+- **Dependencias Clave:**
+  - FastAPI
+  - Uvicorn
+  - SQLModel
+  - Passlib[bcrypt]
+  - Bcrypt v3.2.2 (Requerido para Windows)
+  - Python-Jose
+  - Python-Multipart
 
 ## 🛠️ Instalación
 
