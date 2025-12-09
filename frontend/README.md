@@ -1,65 +1,48 @@
-# 💻 Frontend - Sistema de Gestión de Rutinas
+# 💻 GymApp Frontend (React + Vite)
 
-Aplicación web moderna desarrollada con **React** y **Vite** para la gestión integral de rutinas de gimnasio.
+Interfaz de usuario para el sistema de gestión de gimnasio. Desarrollado con **React**, **Vite** y **Context Context** para autenticación.
 
-## 🚀 Tecnologías Principales
+## 🚀 Requisitos
+- **Node.js** (versión 16 o superior).
+- **NPM** (incluido con Node.js).
+- El **Backend** corriendo en el puerto 8000.
 
-- **React 19**: Biblioteca UI core.
-- **Vite 6**: Build tool de alta velocidad.
-- **Axios**: Cliente HTTP para comunicación API.
-- **React Router 7**: Manejo de navegación SPA.
-- **@dnd-kit**: Biblioteca para funcionalidad Drag & Drop.
-- **jsPDF**: Generación y descarga de reportes PDF.
-- **CSS Modules/Variables**: Estilizado moderno y mantenible.
+## 🛠️ Instalación
 
-## 📂 Estructura del Proyecto
+1.  **Navegar a la carpeta frontend**:
+    ```bash
+    cd frontend
+    ```
 
-```
-frontend/
-├── src/
-│   ├── api/          # Configuración de Axios y endpoints
-│   ├── components/   # Componentes UI reutilizables (Cards, Modals, Forms)
-│   ├── pages/        # Vistas principales de la aplicación
-│   ├── services/     # Lógica de negocio adicional
-│   ├── utils/        # Funciones helpers (PDF Export, Formateo)
-│   ├── App.jsx       # Componente raíz y Rutas
-│   └── main.jsx      # Punto de entrada
-├── public/           # Assets estáticos
-└── index.html        # HTML base
-```
-
-## ⚙️ Configuración
-
-La URL del backend se encuentra definida en:
-`src/api/api.js`
-
-```javascript
-const API_BASE_URL = 'http://localhost:8000';
-```
-*Si el backend se ejecuta en otro puerto, modifique esta línea.*
-
-## 🛠️ Instalación y Ejecución
-
-1.  **Instalar dependencias:**
+2.  **Instalar dependencias**:
     ```bash
     npm install
     ```
 
-2.  **Iniciar Servidor de Desarrollo:**
-    ```bash
-    npm run dev
-    ```
-    > El frontend estará disponible en: **http://localhost:5173**
+## ▶️ Ejecución (Desarrollo)
 
-3.  **Construir para Producción (Build):**
-    ```bash
-    npm run build
-    ```
+Para iniciar el servidor de desarrollo:
 
-## ✨ Funcionalidades Clave
+```bash
+npm run dev
+```
 
-- **Dashboard**: Estadísticas en tiempo real.
-- **Gestor de Rutinas**: CRUD completo de rutinas.
-- **Editor con Drag & Drop**: Reordenamiento visual de ejercicios.
-- **Filtros Inteligentes**: Búsqueda por nombre y día.
-- **Exportación**: Descarga de rutinas en formato PDF profesional.
+La aplicación estará disponible en [http://localhost:5173](http://localhost:5173).
+
+## 🔑 Autenticación
+El sistema cuenta con rutas protegidas.
+1.  Al abrir la app, serás redirigido a `/login`.
+2.  Si no tienes cuenta, ve a `/register` para crear un usuario.
+3.  Una vez logueado, el token se guarda en `localStorage` y se envía automáticamente en cada petición a la API.
+
+## 📦 Estructura
+- `src/api`: Configuración de Axios e interceptores.
+- `src/context`: `AuthContext` para manejo de sesión global.
+- `src/pages`: Vistas de la aplicación (Login, Registro, Rutinas, etc).
+- `src/components`: Componentes reutilizables y `PrivateRoute` para protección.
+
+## 🌐 Configuración
+La URL de la API base está configurada en `src/api/api.js`. Por defecto es `http://localhost:8000`.
+
+---
+**Desarrollado para TP Programación IV - UTN**
