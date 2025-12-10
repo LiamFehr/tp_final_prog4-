@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
 from database.db import engine
+from database.session import get_session
 from models.rutina import Rutina
 from models.rutina_schema import RutinaCreate
 from models.rutina_update_schema import RutinaUpdate
@@ -9,9 +10,6 @@ from routes.auth import get_current_user
 
 router = APIRouter()
 
-def get_session():
-    with Session(engine) as session:
-        yield session
 
 @router.post("/rutinas", status_code=201)
 def crear_rutina(rutina_data: RutinaCreate, session: Session = Depends(get_session), current_user = Depends(get_current_user)):
